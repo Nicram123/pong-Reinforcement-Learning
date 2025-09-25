@@ -6,7 +6,8 @@ from scoreboard import Scoreboard
 import socket
 import pickle
 import _tkinter
-import server
+from tensorflow.keras.models import load_model
+import numpy as np
 
 screen = Screen()
 screen.bgcolor('black')
@@ -14,11 +15,10 @@ screen.setup(width=800, height=600)
 #screen.title('Pong')
 screen.tracer(0) # wylaczenie animacji 
 
+HEIGHT = 600 
+
 FORMAT = 'utf-8'
 HEADER = 70
-PORT = 4900
-SERVER = '192.168.118.124'
-ADDR = (SERVER, PORT) 
 
 r_paddle = Paddle((350, 0))
 l_paddle = Paddle((-350, 0))
@@ -36,33 +36,6 @@ screen.onkey(l_paddle.go_up, 'w') # funkcja wywolana po wcisnieciu gornej strzal
 screen.onkey(l_paddle.go_down, 's') # 
 
 
-
-
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(ADDR)
-client.setblocking(False)
-
-def send(msg):
-  message = pickle.dumps(msg)
-  message_len = len(message)
-  send_len = str(message_len).encode(FORMAT)
-  send_len += b' ' * ( HEADER - len(send_len) )
-  client.send(send_len + message)
-
-def receive_data():
-  try:
-    data_header = client.recv(HEADER).decode(FORMAT)
-    if data_header:
-      print('eluwina')
-      data_len = int(data_header.strip())
-      serialized_data = b""
-      while len(serialized_data) < data_len:
-        serialized_data += client.recv(data_len - len(serialized_data))
-      obj = pickle.loads(serialized_data)
-      return obj
-    return None
-  except Exception as e:
-    return None
     
 def update_game_state(state):
     ball.setx(state['ball'][0])
@@ -77,20 +50,46 @@ def update_game_state(state):
     scoreboard.update_scoreboard()
     
     
-
-
+def clamp_paddle(paddle):
+    max_y = 250
+    min_y = -250
+    if paddle.ycor() > max_y:
+        paddle.sety(max_y)
+    elif paddle.ycor() < min_y:
+        paddle.sety(min_y)
 
 # zawsze gdy wylaczamy animacje trzeba updatowac po nic nie bedzie widoczne 
 try:
   game_is_on = True
   iteration = 0
-  clients = server.return_clients()
-  while game_is_on and len(clients) > 1:
+  
+  
+  q_network = load_model("pong_ai_ep200.h5", compile=False)
+  while game_is_on:
     time.sleep(0.1)
     #ball.move_speed
     screen.update()
-    ball.move()
+    # -- new code here --
+    ball.move() 
+    state = np.array([
+        ball.xcor(), ball.ycor(),
+        ball.x_move, ball.y_move,
+        r_paddle.ycor(), l_paddle.ycor()
+    ])
+    state = np.expand_dims(state, axis=0)  # (1,6)
+    q_values = q_network(state)
+    action = np.argmax(q_values[0])
+    if action == 1:
+        r_paddle.sety(r_paddle.ycor() + 20)
+    elif action == 2:
+        r_paddle.sety(r_paddle.ycor() - 20)
+    # -- end of the new code 
     
+    
+    
+    clamp_paddle(r_paddle)  # <-- ograniczenie ruchu AI
+    # --- gracz kontroluje lewą paletkę ---
+    clamp_paddle(l_paddle)  # <-- ograniczenie ruchu gracza
     
     # Detect collision with wall 
     if ball.ycor() > 280 or ball.ycor() < -280:
@@ -118,14 +117,7 @@ try:
           'scores': (scoreboard.l_score, scoreboard.r_score),
           
       }
-      
-    send(game_state)
-    #if time.time() % 0.1 < 0.01:  # Odbieranie danych co 100 ms
-
-    updated_state = receive_data()
-    if updated_state:
-        print('elllllooooo')
-        update_game_state(updated_state)
+    update_game_state(game_state)
         
     time.sleep(0.01) 
 except _tkinter.TclError as e:
