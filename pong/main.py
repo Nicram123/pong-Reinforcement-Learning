@@ -64,18 +64,27 @@ try:
   iteration = 0
   
   
-  q_network = load_model("pong_ai_ep200.h5", compile=False)
+  #q_network = load_model("pong_ai_ep300.keras", compile=False)
+  q_network = load_model("models/pong_ai_ep2200.keras", compile=False) # na 800 i 1600 gra sie super 
   while game_is_on:
     time.sleep(0.1)
     #ball.move_speed
     screen.update()
     # -- new code here --
     ball.move() 
-    state = np.array([
-        ball.xcor(), ball.ycor(),
-        ball.x_move, ball.y_move,
-        r_paddle.ycor(), l_paddle.ycor()
-    ])
+    
+    state = np.array(
+      [
+    ball.xcor() / 400,
+    ball.ycor() / 300,
+    ball.x_move / 10,
+    ball.y_move / 10,
+    r_paddle.ycor() / 300,
+    l_paddle.ycor() / 300,
+    (ball.ycor() - r_paddle.ycor()) / 300,
+    (ball.ycor() - l_paddle.ycor()) / 300
+   ])
+    
     state = np.expand_dims(state, axis=0)  # (1,6)
     q_values = q_network(state)
     action = np.argmax(q_values[0])
