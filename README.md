@@ -12,12 +12,12 @@ git clone git@github.com:Nicram123/pong-Reinforcement-Learning.git
 ```bash
 pip install pygame
 ```
+```bash
+python -m tensorflow, numpy
+```
 4. Uruchom trening:
 ```bash
 python -m train
-```
-```bash
-python -m tensorflow, numpy
 ```
 lub skorzystaj z gotowych modeli w folderze `models`
 
