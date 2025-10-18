@@ -12,7 +12,6 @@ import numpy as np
 screen = Screen()
 screen.bgcolor('black')
 screen.setup(width=800, height=600)
-#screen.title('Pong')
 screen.tracer(0) # wylaczenie animacji 
 
 HEIGHT = 600 
@@ -65,9 +64,9 @@ try:
   
   
   #q_network = load_model("pong_ai_ep300.keras", compile=False)
-  q_network = load_model("models/pong_ai_ep2200.keras", compile=False) # na 800 i 1600 gra sie super 
+  q_network = load_model("models/pong_ai_ep1600.keras", compile=False) # na 800 i 1600 gra sie super 
   while game_is_on:
-    time.sleep(0.1)
+    time.sleep(0.01)
     #ball.move_speed
     screen.update()
     # -- new code here --
@@ -133,5 +132,4 @@ except _tkinter.TclError as e:
     print(f"Błąd: {e}. Ekran turtle został zamknięty.")
 finally:
     screen.bye()
-
 screen.exitonclick() 

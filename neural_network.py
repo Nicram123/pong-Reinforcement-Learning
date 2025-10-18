@@ -74,15 +74,7 @@ class PongEnv:
             self.ball_x = self.width/2 - 60
             reward += 1 # 0.1  # nagroda za odbicie
             print("AI hit the ball")
-            
-        #move = np.random.choice([-self.paddle_speed, 0, self.paddle_speed])
-        #self.l_paddle_y += move
-        
-        # bot podąża za piłką z lekkim opóźnieniem
-        #if self.ball_y > self.l_paddle_y + 10:
-        #    self.l_paddle_y += self.paddle_speed
-        #elif self.ball_y < self.l_paddle_y - 10:
-        #    self.l_paddle_y -= self.paddle_speed
+                
         if np.random.rand() < 0.4:  # 70% szansy że w ogóle ruszy
             if self.ball_y > self.l_paddle_y + 20:
                 self.l_paddle_y += self.paddle_speed

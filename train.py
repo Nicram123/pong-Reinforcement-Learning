@@ -77,7 +77,6 @@ for episode in range(NUM_EPISODES):
         next_state, reward, done = env.step(action)
 
         memory.append((state, action, reward, next_state, done))
-
         if step_count % 5 == 0:
             loss = replay()
             if loss is not None:
