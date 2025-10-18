@@ -5,18 +5,23 @@ Ten projekt to implementacja gry Pong z wykorzystaniem uczenia ze wzmocnieniem (
 1. Sklonuj repozytorium: `git clone`
 ```bash
 git clone git@github.com:Nicram123/pong-Reinforcement-Learning.git
-```                                                                      
+```
+2. Sterowanie graczem
+`w` - góra, `s` - dół                                                           
 3. Zainstaluj wymagane biblioteki:
 ```bash
 pip install pygame
 ```
-5. Uruchom trening:
+4. Uruchom trening:
 ```bash
 python -m train
 ```
+```bash
+python -m tensorflow, numpy
+```
 lub skorzystaj z gotowych modeli w folderze `models`
 
-7. Uruchom program z poziomu `main.py`: 
+5. Uruchom program z poziomu `main.py`: 
 ```bash
 python main.py
 ```
