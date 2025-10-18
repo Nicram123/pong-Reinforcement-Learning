@@ -25,7 +25,7 @@ Trening Paletki odbywa się tak że:
 * jeden epizod trwa dopóki ktoś nie zdobędzie punktu, podczas trenowania lewa strona (user) jest symulowana po przez losowe ruchy w stronę piłki zmierzającej do niego
 *  na podstawie symulowanego lewego gracza , AI (prawa strona uczy się ruchu, żeby gra trwała jak najdłużej)
 ## Wyniki po treningu 
-![pong](https://github.com/user-attachments/assets/33d53d44-432f-4194-bfe2-6607d3086e6c)
+![pong](https://github.com/user-attachments/assets/92e00ec3-4eed-4e49-b11e-3934392b79a1)
 ## Uwagi
 * Na razie najlepszy z modeli `pong_ai_epq600.keras` z folderu `models`
 
